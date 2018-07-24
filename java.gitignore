@@ -23,10 +23,10 @@
 hs_err_pid*
 
 #idea
-*.idea
 *.iml
 
 #directory
 **/target
 **/out
+**/.idea
 
