@@ -18,12 +18,12 @@
 
         3.Collcetion 接口
 
-                3.1 是 java 对数据结构的实现的定义。表（ArrayList、linkedList）就是其中的一种定义。
+            3.1 是 java 对数据结构的实现的定义。表（ArrayList、linkedList）就是其中的一种定义。
 
-                3.2 其中 Collection 接口扩展了 Iterator 接口 ,
-                    每一个Collection 都要提供Iterator的实现（提供该接口的迭代方式）。
+            3.2 其中 Collection 接口扩展了 Iterator 接口 ,
+                每一个Collection 都要提供Iterator的实现（提供该接口的迭代方式）。
 
-                3.3 Collection的实现能否使用ForEach,需要实现Iterator。ForEach依赖Iterator.
+            3.3 Collection的实现能否使用ForEach,需要实现Iterator。ForEach依赖Iterator.
 
        4.Iterator remove()
 
