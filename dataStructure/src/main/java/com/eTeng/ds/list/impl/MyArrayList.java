@@ -1,7 +1,6 @@
 package com.eTeng.ds.list.impl;
 
 import com.eTeng.ds.list.interfaces.MyList;
-
 import java.util.Iterator;
 import java.util.ListIterator;
 
