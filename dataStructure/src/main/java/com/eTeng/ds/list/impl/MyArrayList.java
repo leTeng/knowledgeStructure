@@ -3,6 +3,7 @@ package com.eTeng.ds.list.impl;
 import com.eTeng.ds.list.interfaces.MyList;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 public class MyArrayList<AnyType> implements MyList<AnyType>{
     /**
@@ -78,14 +79,19 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
         return false;
     }
 
+    public void remove(int idx){
+    	  checkRange(idx);
+          AnyType removeEle = elements[idx];
+          for(int i = idx; i < size() - 1; i++){
+              elements[i] = elements[i+1];
+          }
+          size--;
+//          return removeEle;
+    }
     public AnyType set(AnyType anyType,int idx){
-        checkRange(idx);
-        AnyType removeEle = elements[idx];
-        for(int i = idx; i < size() - 1; i++){
-            elements[i] = elements[i+1];
-        }
-        size--;
-        return removeEle;
+    	AnyType old = elements[idx];
+    	elements[idx] = anyType;
+    	return old;
     }
 
     public boolean contain(AnyType anyType){
@@ -98,13 +104,8 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
         return false;
     }
 
-
-    public void remove(int index){
-
-    }
-
     /**
-     * 扩容
+       * 扩容
      * @param newCapacity
      */
     public void ensureCapacity(int newCapacity){
@@ -132,4 +133,22 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
             throw new IndexOutOfBoundsException();
         }
     }
+    
+    public class MyIterator<AnyType> implements Iterator<AnyType>{
+
+    	//当前光标
+    	private int current = 0;
+    	
+		public boolean hasNext() {
+			return  size() > current;
+		}
+
+		public AnyType next() {
+			if(!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			return (AnyType) elements[current++];
+		}
+    	
+    }  
 }
