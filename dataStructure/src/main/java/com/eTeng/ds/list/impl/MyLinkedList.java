@@ -1,11 +1,14 @@
 package com.eTeng.ds.list.impl;
 
-import com.eTeng.ds.list.interfaces.MyList;
-import sun.plugin.dom.exception.InvalidStateException;
+//import sun.plugin.dom.exception.InvalidStateException;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+
+import org.w3c.dom.Node;
+
+import com.eTeng.ds.list.interfaces.MyList;
 
 public class MyLinkedList<AnyType> implements MyList<AnyType>{
 
@@ -36,7 +39,7 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
 
 
     public void add(AnyType anyType , int index){
-        addBefore(anyType,getNode(index));
+        addBefore(anyType,getNode(index,0,size()));
     }
 
     public void add(AnyType anyType){
@@ -160,8 +163,12 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      * @param anyType
      * @return
      */
-    private Node findElement(AnyType anyType){
-        for(Node node = beginMarker; node != endMarker; node = node.next){
+    private Node<AnyType> findElement(AnyType anyType){
+        Node<AnyType> node = beginMarker;
+    	while((node = node.next) != null){
+    		if(node == endMarker) {
+    			break;
+    		}
             if(node.data.equals(anyType)){
                 return node;
             }
@@ -186,9 +193,9 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      */
     private Node<AnyType> getNode(int idx ,int lower , int upper){
 
-        Node node;
+        Node<AnyType> node;
         rangeCheck(idx, lower, upper);
-        if(idx < (upper - lower)  / 2){
+        if(idx < size()  / 2){
             //由左往右遍历
             node = beginMarker;
             for(int i = idx; i < idx; i++){
@@ -222,11 +229,27 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      * @param upper 结束位置
      */
     private void rangeCheck(int idx , int lower , int upper){
-        if(idx < lower || idx > upper){
+        if(idx < 0 || idx > size()){
             throw new IndexOutOfBoundsException();
         }
     }
-
+    /**
+     *	重写toString
+     */
+    @Override
+    public String toString() {
+    	 Iterator<AnyType> iterator = iterator();
+         StringBuilder sb = new StringBuilder("[");
+         for(;iterator.hasNext();){
+        	 sb.append(iterator.next());
+        	 if(iterator.hasNext()) {
+        		 sb.append(",");
+        	 }
+         }
+         sb.append("]");
+         return sb.toString();
+    }
+    
     /**
      * 迭代器
      */
@@ -235,7 +258,7 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
         /**
          * 当前元素
          */
-        private Node<AnyType> current = beginMarker;
+        private Node<AnyType> current = beginMarker.next;
 
         /**
          * 限制了通过 next() 之后才允许删除。默认不能删除
@@ -271,7 +294,7 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
                 throw new ConcurrentModificationException();
             }
             if(!allowRemove){
-                throw new InvalidStateException("Before remove elements, Call next() gets the element");
+                throw new IllegalStateException("Before remove elements, Call next() gets the element");
             }
             removeBefore(current.prev);
             allowRemove = false;

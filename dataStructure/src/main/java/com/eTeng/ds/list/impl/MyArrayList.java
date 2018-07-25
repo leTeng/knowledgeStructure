@@ -144,10 +144,12 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
     public String toString(){
         Iterator<AnyType> iterator = iterator();
         StringBuilder sb = new StringBuilder("[");
-        for(;iterator.hasNext();sb.append(",")){
+        for(;iterator.hasNext();){
             sb.append(iterator.next());
+            if(iterator.hasNext()) {
+            	sb.append(",");
+            }
         }
-        sb.deleteCharAt(sb.length()-1);
         sb.append("]");
         return sb.toString();
     }
