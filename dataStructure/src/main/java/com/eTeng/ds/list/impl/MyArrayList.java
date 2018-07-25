@@ -76,7 +76,14 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
     }
 
     public boolean remove(AnyType anyType){
-        return false;
+        Iterator<AnyType> iterator = iterator();
+        for(int idx=0; iterator.hasNext() ; idx++){
+            if(iterator.next().equals(anyType)){
+                remove(idx);
+            }
+        }
+        size--;
+        return true;
     }
 
     public void remove(int idx){
@@ -120,7 +127,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
     }
 
     public Iterator<AnyType> iterator(){
-        return null;
+        return new MyIterator();
     }
 
     public ListIterator<AnyType> listIterator(){
@@ -133,14 +140,26 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
             throw new IndexOutOfBoundsException();
         }
     }
-    
+
+    @Override
+    public String toString(){
+        Iterator<AnyType> iterator = iterator();
+        StringBuilder sb = new StringBuilder("[");
+        for(;iterator.hasNext();sb.append(",")){
+            sb.append(iterator.next());
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append("]");
+        return sb.toString();
+    }
+
     public class MyIterator<AnyType> implements Iterator<AnyType>{
 
     	//当前光标
     	private int current = 0;
     	
 		public boolean hasNext() {
-			return  size() > current;
+			return  MyArrayList.this.size() > current;
 		}
 
 		public AnyType next() {
@@ -151,7 +170,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
 		}
 
         public void remove(){
-
+            MyArrayList.this.remove(--current);
         }
 
     }  
