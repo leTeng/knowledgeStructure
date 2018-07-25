@@ -70,12 +70,11 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
         size++;
     }
 
-    public boolean add(AnyType anyType){
+    public void add(AnyType anyType){
          add(anyType,size());
-         return true;
     }
 
-    public boolean remove(AnyType anyType){
+    public AnyType remove(AnyType anyType){
         Iterator<AnyType> iterator = iterator();
         for(int idx=0; iterator.hasNext() ; idx++){
             if(iterator.next().equals(anyType)){
@@ -83,17 +82,17 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
             }
         }
         size--;
-        return true;
+        return anyType;
     }
 
-    public void remove(int idx){
+    public AnyType remove(int idx){
     	  checkRange(idx);
           AnyType removeEle = elements[idx];
           for(int i = idx; i < size() - 1; i++){
               elements[i] = elements[i+1];
           }
           size--;
-//          return removeEle;
+          return removeEle;
     }
     public AnyType set(AnyType anyType,int idx){
     	AnyType old = elements[idx];

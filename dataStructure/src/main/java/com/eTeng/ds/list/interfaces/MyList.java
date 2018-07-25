@@ -1,5 +1,7 @@
 package com.eTeng.ds.list.interfaces;
 
+import org.omg.CORBA.Any;
+
 import java.util.ListIterator;
 
 public interface MyList<AnyType> extends MyCollection<AnyType>{
@@ -20,7 +22,7 @@ public interface MyList<AnyType> extends MyCollection<AnyType>{
      * @param anyType
      * @return
      */
-    boolean remove(AnyType anyType);
+    AnyType remove(AnyType anyType);
 
     /**
      * 窄化ADT容量为当前元素大小

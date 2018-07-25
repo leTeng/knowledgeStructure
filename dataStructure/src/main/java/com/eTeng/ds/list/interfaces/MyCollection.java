@@ -49,14 +49,14 @@ public interface MyCollection<AnyType>{
      * @param anyType
      * @return
      */
-    boolean add(AnyType anyType);
+     void add(AnyType anyType);
 
 
     /**
      * 删除指定位置
      * @param index
      */
-    void remove(int index);
+    AnyType remove(int index);
 
     /**
      * 获取普通迭代器
