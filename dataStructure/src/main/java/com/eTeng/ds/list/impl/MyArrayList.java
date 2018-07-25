@@ -149,6 +149,10 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
 			}
 			return (AnyType) elements[current++];
 		}
-    	
+
+        public void remove(){
+
+        }
+
     }  
 }
