@@ -38,6 +38,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
         ensureCapacity(size());
     }
 
+
     public AnyType get(int idx){
         checkRange(idx);
         return elements[idx];
@@ -74,6 +75,25 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
          add(anyType,size());
     }
 
+    public void addAll(MyList<AnyType> myList){
+        Iterator<AnyType> iterator = myList.iterator();
+        while(iterator.hasNext()){
+            add(iterator.next());
+        }
+    }
+
+    public void removeAll(MyList<AnyType> myList){
+        for(int idx = 0; idx < myList.size(); idx++){
+            AnyType anyType = myList.get(idx);
+            for(int cpaIdx = idx; cpaIdx < size(); cpaIdx++){
+                if(anyType.equals(get(cpaIdx))){
+                    remove(cpaIdx);
+                    break;
+                }
+            }
+        }
+    }
+
     public AnyType remove(AnyType anyType){
         Iterator<AnyType> iterator = iterator();
         for(int idx=0; iterator.hasNext() ; idx++){
@@ -85,15 +105,20 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
         return anyType;
     }
 
+    public AnyType remove(){
+        return remove(size()-1);
+    }
     public AnyType remove(int idx){
     	  checkRange(idx);
           AnyType removeEle = elements[idx];
+          elements[idx] = null;
           for(int i = idx; i < size() - 1; i++){
               elements[i] = elements[i+1];
           }
           size--;
           return removeEle;
     }
+
     public AnyType set(AnyType anyType,int idx){
     	AnyType old = elements[idx];
     	elements[idx] = anyType;

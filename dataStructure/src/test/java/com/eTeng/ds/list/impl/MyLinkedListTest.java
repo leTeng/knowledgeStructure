@@ -1,10 +1,8 @@
 package com.eTeng.ds.list.impl;
 
+import com.eTeng.ds.list.interfaces.MyList;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import java.util.Iterator;
 
 public class MyLinkedListTest{
@@ -107,6 +105,56 @@ public class MyLinkedListTest{
     	}
     }
 
+    @Test
+    public void getUnion(){
+        MyList myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("2");
+        myList.add("5");
+        System.out.println(myList);
+        System.out.println("交集为：");
+        MyList union = myLinkedList.getUnion(myList);
+        System.out.println(union);
+    }
+
+    @Test
+    public void addAll(){
+        MyList myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("2");
+        myList.add("5");
+        System.out.println(myList);
+        System.out.println("添加后: ");
+        myLinkedList.addAll(myList);
+        System.out.println(myLinkedList);
+        System.out.println(myLinkedList.size());
+    }
+
+    @Test
+    public void removeAll(){
+        MyList myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("2");
+        myList.add("5");
+        System.out.println(myList);
+        System.out.println("删除后: ");
+        myLinkedList.removeAll(myList);
+        System.out.println(myLinkedList);
+        System.out.println(myLinkedList.size());
+
+    }
+
+    @Test
+    public void getInterSection(){
+        MyLinkedList<String> myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("5");
+        myList.add("6");
+        System.out.println(myList);
+        System.out.println("交集为：");
+        MyList interSection = myLinkedList.getInterSection(myList);
+        System.out.println(interSection);
+    }
     @Test
     public void listIterator(){
     }

@@ -1,6 +1,8 @@
 package com.eTeng.ds.list.impl;
 
+import com.eTeng.ds.list.interfaces.MyList;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Iterator;
 
@@ -93,6 +95,31 @@ public class MyArrayListTest{
         }
     }
 
+    @Test
+    public void addAll(){
+        MyList myList = new MyLinkedList();
+        myList.add("4");
+        myList.add("5");
+        myList.add("6");
+        System.out.println(myList);
+        myArrayList.addAll(myList);
+        System.out.println("添加后：");
+        System.out.println(myArrayList);
+        System.out.println(myArrayList.size());
+    }
+
+    @Test
+    public void removeAll(){
+        MyList myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("2");
+        myList.add("6");
+        System.out.println(myList);
+        myArrayList.removeAll(myList);
+        System.out.println("删除后：");
+        System.out.println(myArrayList);
+        System.out.println(myArrayList.size());
+    }
     @org.junit.Test
     public void listIterator(){
     }
