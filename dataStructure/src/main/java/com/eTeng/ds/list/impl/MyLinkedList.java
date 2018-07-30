@@ -61,6 +61,10 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
         if(node == null){
             throw new NoSuchElementException();
         }
+        return remove(node);
+    }
+
+    public T remove(Node<T> node){
         return removeBefore(node);
     }
 
@@ -108,6 +112,10 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
 
     public T set(T t , int idx){
         Node<T> node = getNode(idx);
+        return set(t,node);
+    }
+
+    public T set(T t , Node<T> node){
         T oldDate = node.data;
         node.data = t;
         return oldDate;
@@ -135,7 +143,7 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
      * @return
      */
     public ListIterator listIterator(){
-        throw new UnsupportedOperationException();
+        return new MyListIterator();
     }
 
     /**
@@ -421,6 +429,92 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
             expectedModCount++;
         }
 
+    }
+
+    private class MyListIterator implements ListIterator<T>{
+
+        private MyLinkedList.Node<T> current = beginMarker.next;
+        private int expectedModCount = modCount;
+        private boolean allowChange = false;
+        private boolean backwards;
+
+        public boolean hasNext(){
+            return current != endMarker;
+        }
+
+        public T next(){
+            effectiveChek();
+            T data = current.data;
+            current = current.next;
+            allowChange = true;
+            backwards = true;
+            return data;
+        }
+
+        public boolean hasPrevious(){
+            return current.prev != beginMarker;
+        }
+
+        public T previous(){
+            effectiveChek();
+            current = current.prev;
+            T data = current.data;
+            allowChange = true;
+            backwards = false;
+            return data;
+        }
+
+        public int nextIndex(){
+            throw  new UnsupportedOperationException();
+        }
+
+        public int previousIndex(){
+            throw  new UnsupportedOperationException();
+        }
+
+        public void remove(){
+            effectiveChek();
+            allowChangeCheck();
+            Node<T> node;
+            if(backwards){
+                //向后迭代
+                node = current.prev;
+            }else{
+               //向前迭代
+                node = current;
+                current = current.prev;
+            }
+            MyLinkedList.this.remove(node);
+            allowChange = false;
+            expectedModCount++;
+        }
+
+        public void set(T t){
+            effectiveChek();
+            MyLinkedList.this.set(t,current);
+        }
+
+        public void add(T t){
+            effectiveChek();
+            MyLinkedList.this.addBefore(t,current.next);
+            allowChange = false;
+            expectedModCount++;
+        }
+
+        private void effectiveChek(){
+            if(!hasNext()){
+                throw new IllegalStateException();
+            }
+            if(expectedModCount != modCount){
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        private void allowChangeCheck(){
+            if(!allowChange){
+                throw new IllegalStateException();
+            }
+        }
     }
 
     /**

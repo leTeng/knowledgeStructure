@@ -4,6 +4,7 @@ import com.eTeng.ds.list.interfaces.MyList;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class MyLinkedListTest{
 
@@ -155,8 +156,37 @@ public class MyLinkedListTest{
         MyList interSection = myLinkedList.getInterSection(myList);
         System.out.println(interSection);
     }
+
     @Test
     public void listIterator(){
+        myLinkedList.add("4");
+        myLinkedList.add("5");
+        ListIterator lit = myLinkedList.listIterator();
+        if(lit.hasNext()){
+            String next = (String) lit.next();
+            System.out.println(next);
+        }
+        if(lit.hasNext()){
+            String next = (String) lit.next();
+            System.out.println(next);
+            System.out.println(myLinkedList);
+        }
+        if(lit.hasNext()){
+            String next = (String) lit.next();
+            System.out.println(next);
+            lit.remove();
+            System.out.println(myLinkedList);
+        }
+        if(lit.hasPrevious()){
+            String previous =  (String) lit.previous();
+            System.out.println(previous);
+            lit.remove();
+            System.out.println(myLinkedList);
+            lit.add("3");
+            System.out.println(myLinkedList);
+            lit.set("2");
+            System.out.println(myLinkedList);
+        }
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class MyArrayListTest{
 
@@ -122,5 +123,20 @@ public class MyArrayListTest{
     }
     @org.junit.Test
     public void listIterator(){
+        myArrayList.add(4);
+        myArrayList.add(5);
+        ListIterator<Integer> lit = myArrayList.listIterator();
+        if(lit.hasNext()){
+            System.out.println(lit.next());
+        }
+        if(lit.hasNext()){
+            System.out.println(lit.next());
+        }
+        if(lit.hasNext()){
+            System.out.println(lit.next());
+            System.out.println(myArrayList);
+            lit.remove();
+            System.out.println(myArrayList);
+        }
     }
 }

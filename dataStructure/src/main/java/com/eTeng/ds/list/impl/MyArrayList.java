@@ -1,9 +1,9 @@
 package com.eTeng.ds.list.impl;
 
 import com.eTeng.ds.list.interfaces.MyList;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import org.omg.PortableServer.ThreadPolicyOperations;
+
+import java.util.*;
 
 public class MyArrayList<AnyType> implements MyList<AnyType>{
     /**
@@ -25,6 +25,11 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
      * 当前元素数量
      */
     private int size;
+
+    /**
+     * ADT 结构的改变次数
+     */
+    private int modCount = 0;
 
     public MyArrayList(int initCapacity){
         ensureCapacity(initCapacity);
@@ -68,6 +73,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
             elements[i] = elements[i - 1];
         }
         elements[index] = anyType;
+        modCount++;
         size++;
     }
 
@@ -102,6 +108,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
             }
         }
         size--;
+        modCount++;
         return anyType;
     }
 
@@ -116,6 +123,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
               elements[i] = elements[i+1];
           }
           size--;
+          modCount++;
           return removeEle;
     }
 
@@ -148,6 +156,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
             newElements[i] = elements[i];
         }
         elements = newElements;
+        modCount++;
     }
 
     public Iterator<AnyType> iterator(){
@@ -155,7 +164,7 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
     }
 
     public ListIterator<AnyType> listIterator(){
-        return null;
+        return new MyListIterator();
     }
 
 
@@ -179,25 +188,107 @@ public class MyArrayList<AnyType> implements MyList<AnyType>{
         return sb.toString();
     }
 
-    public class MyIterator<AnyType> implements Iterator<AnyType>{
+    private class MyIterator<AnyType> implements Iterator<AnyType>{
 
     	//当前光标
     	private int current = 0;
-    	
+    	private boolean allowRemove = false;
+    	private int expectedModCount = modCount;
 		public boolean hasNext() {
 			return  MyArrayList.this.size() > current;
 		}
 
 		public AnyType next() {
+		    if(expectedModCount != modCount){
+		        throw new ConcurrentModificationException();
+            }
 			if(!hasNext()) {
 				throw new NoSuchElementException();
 			}
+            allowRemove = true;
 			return (AnyType) elements[current++];
 		}
 
         public void remove(){
+		    if(!allowRemove){
+		        throw new IllegalStateException();
+            }
             MyArrayList.this.remove(--current);
+            expectedModCount++;
         }
 
-    }  
+    }
+
+    private class MyListIterator implements ListIterator<AnyType>{
+
+        private int current = 0;
+        private boolean allowRemove = false;
+        private int expectedModCount = modCount;
+        private boolean backwards;
+        public boolean hasNext(){
+            return current < size();
+        }
+
+        public AnyType next(){
+            if(expectedModCount != modCount){
+                throw new ConcurrentModificationException();
+            }
+            if(!hasNext()){
+                throw new IllegalStateException();
+            }
+            AnyType next = elements[current++];
+            allowRemove = true;
+            backwards = true;
+            return next;
+        }
+
+        public boolean hasPrevious(){
+            return current > 0;
+        }
+
+        public AnyType previous(){
+            if(expectedModCount != modCount){
+                throw new ConcurrentModificationException();
+            }
+            if(!hasPrevious()){
+                throw new IllegalStateException();
+            }
+            AnyType previou = elements[--current];
+            allowRemove = true;
+            backwards = false;
+            return previou;
+        }
+
+        public int nextIndex(){
+            throw new UnsupportedOperationException();
+        }
+
+        public int previousIndex(){
+            throw new UnsupportedOperationException();
+        }
+
+        public void remove(){
+            if(!allowRemove){
+                throw new IllegalStateException();
+            }
+            //向后迭代
+            if(backwards){
+                MyArrayList.this.remove(--current);
+            }else{
+                //向前迭代
+                MyArrayList.this.remove(current--);
+            }
+            allowRemove = false;
+            modCount++;
+        }
+
+        public void set(AnyType anyType){
+            MyArrayList.this.set(anyType,current);
+        }
+
+        public void add(AnyType anyType){
+            MyArrayList.this.add(anyType,current++);
+            modCount++;
+        }
+    }
 }
