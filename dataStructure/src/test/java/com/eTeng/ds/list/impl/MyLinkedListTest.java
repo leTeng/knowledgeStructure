@@ -102,6 +102,9 @@ public class MyLinkedListTest{
     @Test
     public void iterator(){
     	Iterator<String> iterator = myLinkedList.iterator();
+    	// 在使用迭代過程中,禁止改變ADT的結構，否則迭代器是非法的.拋出ConcurrentModifyException
+    	// remove(); 
+    			  
     	while(iterator.hasNext()) {
     		System.out.println(iterator.next());
     	}
