@@ -1,26 +1,18 @@
 package com.eTeng.ds.list.impl;
 
-//import sun.plugin.dom.exception.InvalidStateException;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
-import org.w3c.dom.Node;
-
+import java.util.*;
 import com.eTeng.ds.list.interfaces.MyList;
-
-public class MyLinkedList<AnyType> implements MyList<AnyType>{
+public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
 
     /**
      * 头结点标记
      */
-    private Node<AnyType> beginMarker;
+    private Node<T> beginMarker;
 
     /**
      * 尾节点标记
      */
-    private Node<AnyType> endMarker;
+    private Node<T> endMarker;
 
     /**
      * ADT 元素个数
@@ -37,25 +29,84 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
         doclear();
     }
 
-
-    public void add(AnyType anyType , int index){
-        addBefore(anyType,getNode(index,0,size()));
+    /**
+     * 初始化一个 myList
+     * @param myList
+     */
+    public MyLinkedList(MyList<T> myList){
+        doclear();
+        Iterator<T> iterator = myList.iterator();
+        while(iterator.hasNext()){
+            add(iterator.next());
+        }
     }
 
-    public void add(AnyType anyType){
-        add(anyType,size());
+    public void add(T t , int index){
+        addBefore(t,getNode(index,0,size()));
     }
 
-    public AnyType remove(AnyType anyType){
-        Node<AnyType> node = findElement(anyType);
+    public void add(T t){
+        add(t,size());
+    }
+
+    public void addAll(MyList<T> myList){
+        Iterator<T> iterator = myList.iterator();
+        while(iterator.hasNext()){
+            add(iterator.next());
+        }
+    }
+
+    public void addFirst(T t){
+        addBefore(t,beginMarker.next);
+    }
+
+    public void addLast(T t){
+        addBefore(t,endMarker);
+    }
+
+    public T remove(T t){
+        Node<T> node = findElement(t);
         if(node == null){
             throw new NoSuchElementException();
         }
+        return remove(node);
+    }
+
+    public T remove(Node<T> node){
         return removeBefore(node);
     }
 
-    public AnyType remove(int index){
+    public T remove(int index){
         return removeBefore(getNode(index));
+    }
+
+    public T removeFirst(){
+        return remove(beginMarker.next);
+    }
+
+    public T removeLast(){
+        return remove(endMarker.prev);
+    }
+
+    public void removeAll(MyList<T> myList){
+        Iterator<T> iterator = myList.iterator();
+        Iterator thisIterator;
+        while(iterator.hasNext()){
+            //每一次删除后，重新获取每次迭代器
+            thisIterator = iterator();
+            T target = iterator.next();
+            T next;
+            //处理当前集合为空
+            while(thisIterator.hasNext()){
+                next = (T)thisIterator.next();
+                if(target.compareTo(next) == 0){
+                    thisIterator.remove();
+                    break;
+                }else{
+                    break;
+                }
+            }
+        }
     }
 
     public int size(){
@@ -70,27 +121,39 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
         doclear();
     }
 
-    public AnyType get(int idx){
+    public T get(int idx){
         return getNode(idx).data;
     }
 
-    public AnyType set(AnyType anyType , int idx){
-        Node<AnyType> node = getNode(idx);
-        AnyType oldDate = node.data;
-        node.data = anyType;
+    public T getFirst(){
+        return beginMarker.next.data;
+    }
+
+    public T getLast(){
+        return endMarker.prev.data;
+    }
+
+    public T set(T t , int idx){
+        Node<T> node = getNode(idx);
+        return set(t,node);
+    }
+
+    public T set(T t , Node<T> node){
+        T oldDate = node.data;
+        node.data = t;
         return oldDate;
     }
 
-    public boolean contain(AnyType anyType){
-        if(findElement(anyType) != null){
+    public boolean contain(T t){
+        if(findElement(t) != null){
             return true;
         }else{
             return false;
         }
     }
 
-    public int indexof(AnyType anyType){
-        return findElementIndex(anyType);
+    public int indexof(T t){
+        return findElementIndex(t);
     }
 
     public Iterator iterator(){
@@ -103,7 +166,7 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      * @return
      */
     public ListIterator listIterator(){
-        throw new UnsupportedOperationException();
+        return new MyListIterator();
     }
 
     /**
@@ -122,12 +185,45 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
     }
 
     /**
+     * 获取并集
+     * @param reference 参考列表
+     * @return
+     */
+    public MyList<T> getUnion(MyList<T> reference){
+
+        MyList<T> union = new MyLinkedList<T>();
+        Iterator<T> iterator = iterator();
+        while(iterator.hasNext()){
+            T next = iterator.next();
+            if(isFinedByBinarySearch(next,reference)){
+                union.add(next);
+            }
+        }
+        return union;
+    }
+
+    /**
+     *  获取交集
+     */
+
+    public MyList<T> getInterSection(MyList<T> reference){
+        Iterator<T> iterator = iterator();
+        while(iterator.hasNext()){
+            T next = iterator.next();
+            if(!isFinedByBinarySearch(next,reference)){
+                reference.add(next);
+            }
+        }
+        return reference;
+    }
+
+    /**
      * 添加节点主进程
      * @param data
      * @param node
      */
-    private void addBefore(AnyType data , Node<AnyType> node){
-        Node<AnyType> newNode = new Node<AnyType>(data,node.prev,node);
+    private void addBefore(T data , Node<T> node){
+        Node<T> newNode = new Node<T>(data,node.prev,node);
         node.prev.next = node.prev = newNode;
         this.size++;
         modCount++;
@@ -138,7 +234,7 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      * @param node 删除节点
      * @return
      */
-    private AnyType removeBefore(Node<AnyType> node){
+    private T removeBefore(Node<T> node){
         node.prev.next = node.next;
         node.next.prev = node.prev;
         this.size--;
@@ -146,11 +242,11 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
         return node.data;
     }
 
-    private int findElementIndex(AnyType anyType){
-        Iterator<AnyType> iterator = iterator();
+    private int findElementIndex(T t){
+        Iterator<T> iterator = iterator();
         int indexOf = 0;
         while(iterator.hasNext()){
-            if(iterator.next().equals(anyType)){
+            if(iterator.next().equals(t)){
                 return indexOf;
             }
             indexOf++;
@@ -160,16 +256,16 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
 
     /**
      * 查找元素节点
-     * @param anyType
+     * @param t
      * @return
      */
-    private Node<AnyType> findElement(AnyType anyType){
-        Node<AnyType> node = beginMarker;
+    private Node<T> findElement(T t){
+        Node<T> node = beginMarker;
     	while((node = node.next) != null){
     		if(node == endMarker) {
     			break;
     		}
-            if(node.data.equals(anyType)){
+            if(node.data.equals(t)){
                 return node;
             }
         }
@@ -180,7 +276,7 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      * @param idx 目标位置
      * @return
      */
-    private Node<AnyType> getNode(int idx){
+    private Node<T> getNode(int idx){
         return getNode(idx,0,size() - 1);
     }
 
@@ -191,14 +287,14 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      * @param upper 结束位置
      * @return
      */
-    private Node<AnyType> getNode(int idx ,int lower , int upper){
+    private Node<T> getNode(int idx ,int lower , int upper){
 
-        Node<AnyType> node;
+        Node<T> node;
         rangeCheck(idx, lower, upper);
         if(idx < size()  / 2){
             //由左往右遍历
             node = beginMarker;
-            for(int i = idx; i < idx; i++){
+            for(int i = -1; i < idx; i++){
                 node = node.next;
             }
         }else{
@@ -216,7 +312,7 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
      */
     private void doclear(){
         beginMarker = new Node(null,null,null);
-        endMarker = new Node<AnyType>(null,beginMarker,null);
+        endMarker = new Node<T>(null,beginMarker,null);
         beginMarker.next = endMarker;
         size = 0;
         modCount++;
@@ -233,12 +329,67 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
             throw new IndexOutOfBoundsException();
         }
     }
+
+    /**
+     *  二分查找
+     * @param myList 列表
+     * @param target 尋找目標
+     * @param left 左边界
+     * @param rigth 右边界
+     * @return 索引
+     */
+    private int binarySearch(MyList<T> myList,T target,int left ,int rigth){
+
+        int min = (rigth + left) / 2;
+        if(left > rigth){
+            return -1;
+        }
+        T t = myList.get(min);
+        if(target.compareTo(t) > 0){
+            return binarySearch(myList,target,min + 1,rigth);
+        }else if(target.compareTo(t) < 0){
+            return binarySearch(myList,target,left,min - 1);
+        }else{
+            return min;
+        }
+    }
+
+    private int binarySearch(MyList<T> myList,T target){
+        return binarySearch(myList,target,0,myList.size() - 1);
+    }
+
+    /**
+     * 二分法是否能找到元素
+     * @param next
+     * @param reference
+     * @return
+     */
+    private boolean isFinedByBinarySearch(T next , MyList<T> reference){
+            if(this.binarySearch(reference,next) != -1){
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * 二分查找元素
+     * @param next
+     * @param reference
+     * @return
+     */
+    private T finedByBinarySearch(T next , MyList<T> reference){
+        if(this.binarySearch(reference,next) == 0){
+           return next;
+        }
+        return null;
+    }
+
     /**
      *	重写toString
      */
     @Override
     public String toString() {
-    	 Iterator<AnyType> iterator = iterator();
+    	 Iterator<T> iterator = iterator();
          StringBuilder sb = new StringBuilder("[");
          for(;iterator.hasNext();){
         	 sb.append(iterator.next());
@@ -253,12 +404,12 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
     /**
      * 迭代器
      */
-    private class LinkedListIterator implements Iterator<AnyType>{
+    private class LinkedListIterator implements Iterator<T>{
 
         /**
          * 当前元素
          */
-        private Node<AnyType> current = beginMarker.next;
+        private MyLinkedList.Node<T> current = beginMarker.next;
 
         /**
          * 限制了通过 next() 之后才允许删除。默认不能删除
@@ -274,14 +425,14 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
             return current != endMarker;
         }
 
-        public AnyType next(){
+        public T next(){
             if(expectedModCount != modCount){
                 throw new ConcurrentModificationException();
             }
             if(!hasNext()){
                 throw new NoSuchElementException();
             }
-            AnyType data = current.data;
+            T data = current.data;
             //推进下一个节点
             current = current.next;
             //标记为允许删除
@@ -303,20 +454,109 @@ public class MyLinkedList<AnyType> implements MyList<AnyType>{
 
     }
 
+    private class MyListIterator implements ListIterator<T>{
+
+        private MyLinkedList.Node<T> current = beginMarker.next;
+        private int expectedModCount = modCount;
+        private boolean allowChange = false;
+        private boolean backwards;
+
+        public boolean hasNext(){
+            return current != endMarker;
+        }
+
+        public T next(){
+            effectiveChek();
+            T data = current.data;
+            current = current.next;
+            allowChange = true;
+            backwards = true;
+            return data;
+        }
+
+        public boolean hasPrevious(){
+            return current.prev != beginMarker;
+        }
+
+        public T previous(){
+            effectiveChek();
+            current = current.prev;
+            T data = current.data;
+            allowChange = true;
+            backwards = false;
+            return data;
+        }
+
+        public int nextIndex(){
+            throw  new UnsupportedOperationException();
+        }
+
+        public int previousIndex(){
+            throw  new UnsupportedOperationException();
+        }
+
+        public void remove(){
+            effectiveChek();
+            allowChangeCheck();
+            Node<T> node;
+            if(backwards){
+                //向后迭代
+                node = current.prev;
+            }else{
+               //向前迭代
+                node = current;
+                current = current.prev;
+            }
+            MyLinkedList.this.remove(node);
+            allowChange = false;
+            expectedModCount++;
+        }
+
+        public void set(T t){
+            effectiveChek();
+            MyLinkedList.this.set(t,current);
+        }
+
+        public void add(T t){
+            effectiveChek();
+            MyLinkedList.this.addBefore(t,current.next);
+            allowChange = false;
+            expectedModCount++;
+        }
+
+        private void effectiveChek(){
+            if(expectedModCount != modCount){
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        private void allowChangeCheck(){
+            if(!allowChange){
+                throw new IllegalStateException();
+            }
+        }
+
+        private void isHasNext(){
+            if(!hasNext()){
+                throw new IllegalStateException();
+            }
+        }
+    }
+
     /**
      * 数据抽象（一个节点）
      *      包括：元数据
      *            前驱节点
      *            后置节点
-     * @param <AnyType>
+     * @param <T>
      */
-    private static class Node<AnyType>{
+    private static class Node<T>{
 
-        AnyType data;
-        Node<AnyType> prev;
-        Node<AnyType> next;
+        T data;
+        Node<T> prev;
+        Node<T> next;
 
-        public Node(AnyType data,Node<AnyType> prev,Node<AnyType> next){
+        public Node(T data,Node<T> prev,Node<T> next){
             this.data = data;
             this.prev = prev;
             this.next = next;

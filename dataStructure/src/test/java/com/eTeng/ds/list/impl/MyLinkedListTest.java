@@ -1,11 +1,10 @@
 package com.eTeng.ds.list.impl;
 
+import com.eTeng.ds.list.interfaces.MyList;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class MyLinkedListTest{
 
@@ -111,9 +110,120 @@ public class MyLinkedListTest{
     }
 
     @Test
-    public void listIterator(){
+    public void getUnion(){
+        MyList myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("2");
+        myList.add("5");
+        System.out.println(myList);
+        System.out.println("交集为：");
+        MyList union = myLinkedList.getUnion(myList);
+        System.out.println(union);
     }
 
+    @Test
+    public void addAll(){
+        MyList myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("2");
+        myList.add("5");
+        System.out.println(myList);
+        System.out.println("添加后: ");
+        myLinkedList.addAll(myList);
+        System.out.println(myLinkedList);
+        System.out.println(myLinkedList.size());
+    }
+
+    @Test
+    public void removeAll(){
+        MyList myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("2");
+        myList.add("5");
+        System.out.println(myList);
+        System.out.println("删除后: ");
+        myLinkedList.removeAll(myList);
+        System.out.println(myLinkedList);
+        System.out.println(myLinkedList.size());
+
+    }
+
+    @Test
+    public void getInterSection(){
+        MyLinkedList<String> myList = new MyLinkedList();
+        myList.add("1");
+        myList.add("5");
+        myList.add("6");
+        System.out.println(myList);
+        System.out.println("交集为：");
+        MyList interSection = myLinkedList.getInterSection(myList);
+        System.out.println(interSection);
+    }
+
+    @Test
+    public void listIterator(){
+        myLinkedList.add("4");
+        myLinkedList.add("5");
+        ListIterator lit = myLinkedList.listIterator();
+        if(lit.hasNext()){
+            String next = (String) lit.next();
+            System.out.println(next);
+        }
+        if(lit.hasNext()){
+            String next = (String) lit.next();
+            System.out.println(next);
+            System.out.println(myLinkedList);
+        }
+        if(lit.hasNext()){
+            String next = (String) lit.next();
+            System.out.println(next);
+            lit.remove();
+            System.out.println(myLinkedList);
+        }
+        if(lit.hasPrevious()){
+            String previous =  (String) lit.previous();
+            System.out.println(previous);
+            lit.remove();
+            System.out.println(myLinkedList);
+            lit.add("3");
+            System.out.println(myLinkedList);
+            lit.set("2");
+            System.out.println(myLinkedList);
+        }
+    }
+
+    @Test
+    public void getFirst(){
+        System.out.println(myLinkedList.getFirst());
+    }
+
+    @Test
+    public void getLast(){
+        System.out.println(myLinkedList.getLast());
+    }
+    @Test
+    public void removeFirst(){
+        System.out.println(myLinkedList.removeFirst());
+        System.out.println(myLinkedList);
+    }
+    @Test
+    public void removeLast(){
+        System.out.println(myLinkedList.removeLast());
+        System.out.println(myLinkedList);
+    }
+    @Test
+    public void addFirst(){
+        myLinkedList.addFirst("6");
+        System.out.println(myLinkedList);
+    }
+    @Test
+    public void addLast(){
+        myLinkedList.addLast("7");
+        System.out.println(myLinkedList);
+        myLinkedList.add("8");
+        System.out.println(myLinkedList);
+        System.out.println(myLinkedList.getLast());
+    }
     @Test
     public void ensureCapacity(){
     }
