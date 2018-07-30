@@ -502,9 +502,6 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
         }
 
         private void effectiveChek(){
-            if(!hasNext()){
-                throw new IllegalStateException();
-            }
             if(expectedModCount != modCount){
                 throw new ConcurrentModificationException();
             }
@@ -512,6 +509,12 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
 
         private void allowChangeCheck(){
             if(!allowChange){
+                throw new IllegalStateException();
+            }
+        }
+
+        private void isHasNext(){
+            if(!hasNext()){
                 throw new IllegalStateException();
             }
         }
