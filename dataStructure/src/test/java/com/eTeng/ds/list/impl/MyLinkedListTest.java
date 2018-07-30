@@ -190,6 +190,38 @@ public class MyLinkedListTest{
     }
 
     @Test
+    public void getFirst(){
+        System.out.println(myLinkedList.getFirst());
+    }
+
+    @Test
+    public void getLast(){
+        System.out.println(myLinkedList.getLast());
+    }
+    @Test
+    public void removeFirst(){
+        System.out.println(myLinkedList.removeFirst());
+        System.out.println(myLinkedList);
+    }
+    @Test
+    public void removeLast(){
+        System.out.println(myLinkedList.removeLast());
+        System.out.println(myLinkedList);
+    }
+    @Test
+    public void addFirst(){
+        myLinkedList.addFirst("6");
+        System.out.println(myLinkedList);
+    }
+    @Test
+    public void addLast(){
+        myLinkedList.addLast("7");
+        System.out.println(myLinkedList);
+        myLinkedList.add("8");
+        System.out.println(myLinkedList);
+        System.out.println(myLinkedList.getLast());
+    }
+    @Test
     public void ensureCapacity(){
     }
 

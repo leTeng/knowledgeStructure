@@ -56,6 +56,14 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
         }
     }
 
+    public void addFirst(T t){
+        addBefore(t,beginMarker.next);
+    }
+
+    public void addLast(T t){
+        addBefore(t,endMarker);
+    }
+
     public T remove(T t){
         Node<T> node = findElement(t);
         if(node == null){
@@ -72,6 +80,13 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
         return removeBefore(getNode(index));
     }
 
+    public T removeFirst(){
+        return remove(beginMarker.next);
+    }
+
+    public T removeLast(){
+        return remove(endMarker.prev);
+    }
 
     public void removeAll(MyList<T> myList){
         Iterator<T> iterator = myList.iterator();
@@ -108,6 +123,14 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T>{
 
     public T get(int idx){
         return getNode(idx).data;
+    }
+
+    public T getFirst(){
+        return beginMarker.next.data;
+    }
+
+    public T getLast(){
+        return endMarker.prev.data;
     }
 
     public T set(T t , int idx){
