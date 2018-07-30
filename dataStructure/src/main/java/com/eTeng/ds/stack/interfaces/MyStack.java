@@ -24,4 +24,9 @@ public interface MyStack<T>{
      * @return
      */
     T top();
+    
+    /**
+     * 全部出栈
+     */
+    void popAll();
 }

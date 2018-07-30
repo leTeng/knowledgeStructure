@@ -43,6 +43,7 @@ public class MyArrayStack<T> implements MyStack<T>{
             throw new StackOverflowError();
         }
         elements[++top] = t;
+        size++;
     }
 
     public int size(){
@@ -50,15 +51,42 @@ public class MyArrayStack<T> implements MyStack<T>{
     }
 
     public T pop(){
-        if(size <= 0){
+        if(top == -1){
             throw new IndexOutOfBoundsException();
         }
-        T element = (T)elements[--top];
-        elements[--top] = null;
+        T element = (T)elements[top];
+        elements[top] = null;
+        top--;
         return element;
     }
 
     public T top(){
+    	if(top == -1) {
+    		return null;
+    	}
         return (T)elements[top];
     }
+    
+
+	@Override
+	public void popAll() {
+		while(top != -1) {
+			pop();
+		}
+	}
+	
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("[");
+    	for(int idx = top; idx >= 0 ; idx--) {
+    		sb.append(elements[idx]);
+    		if(idx != 0) {
+    			sb.append(",");
+    		}
+    	}
+    	sb.append("]");
+    	return sb.toString();
+    }
+
 }
