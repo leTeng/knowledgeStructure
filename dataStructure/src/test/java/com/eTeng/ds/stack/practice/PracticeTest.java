@@ -37,8 +37,6 @@ public class PracticeTest{
     @Test
     public void checkJavaSymbol(){
         MyList myList = new MyLinkedList();
-//        myList.add("[");
-//        myList.add("(");
         myList.add("/*");
         myList.add("[");
         myList.add("void");
