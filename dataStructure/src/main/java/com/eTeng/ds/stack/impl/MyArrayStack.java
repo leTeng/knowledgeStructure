@@ -68,7 +68,6 @@ public class MyArrayStack<T> implements MyStack<T>{
     }
     
 
-	@Override
 	public void popAll() {
 		while(top != -1) {
 			pop();

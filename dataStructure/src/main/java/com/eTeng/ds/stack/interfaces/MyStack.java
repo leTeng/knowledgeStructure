@@ -29,4 +29,9 @@ public interface MyStack<T>{
      * 全部出栈
      */
     void popAll();
+
+    /**
+     * 栈的长度
+     */
+    int size();
 }

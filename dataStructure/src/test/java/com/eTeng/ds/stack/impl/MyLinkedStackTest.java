@@ -11,7 +11,7 @@ public class MyLinkedStackTest {
 	
 	@Before
 	public void setUp() {
-		myLinkedStack = new MyLinkedStack<>();
+		myLinkedStack = new MyLinkedStack<String>();
 	}
 	
 	@Test

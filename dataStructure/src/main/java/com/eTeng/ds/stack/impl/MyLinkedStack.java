@@ -53,12 +53,16 @@ public class MyLinkedStack<T> implements MyStack<T>{
 	}
 	
 
-	@Override
 	public void popAll() {
 		while(top != null) {
 			pop();
 		}
 	}
+
+	public int size(){
+		return size;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
