@@ -71,7 +71,7 @@ public class AVLBinaryTree<AnyType> extends MyBinarySearchTree<AnyType>{
             //同向节点不平衡
              if(height(node.left.left) >= height(node.left.right)){
                  //左单旋转
-
+                 rotateWithLeftChild(node);
              }else{
                  //反向节点不平衡,双旋转
 
@@ -80,13 +80,12 @@ public class AVLBinaryTree<AnyType> extends MyBinarySearchTree<AnyType>{
          }else if(height(node.right) - height(node.left) > ALLOW_HEIGHT_DIFF){
              if(height(node.right.right) >= height(node.right.left)){
                 //左单旋转
-
+                 rotateWithRightChild(node);
              }else{
                 //双旋转
              }
-
          }
-         //每次添加都要更新路径上的节点高度
+         //更新路径上的节点高度
          node.height = Math.max(height(node.left),height(node.right)) + 1;
          //返回最新的相对根节点
          return node;
@@ -154,7 +153,5 @@ public class AVLBinaryTree<AnyType> extends MyBinarySearchTree<AnyType>{
             this.right = right;
             this.height = height;
         }
-
-
     }
 }
