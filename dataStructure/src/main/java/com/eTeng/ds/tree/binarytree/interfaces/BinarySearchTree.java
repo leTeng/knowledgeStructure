@@ -31,6 +31,7 @@ public interface BinarySearchTree<AnyType> {
 	AnyType findMin();
 	/**
 	 * 查找ADT中最大元素(二叉查找树)
+	 * ADT 删除某个元素
 	 * @return
 	 */
 	AnyType findMax();
@@ -45,7 +46,7 @@ public interface BinarySearchTree<AnyType> {
 	 * ADT 删除某个元素
 	 */
 	
-	void remove(AnyType anyType);
+	AnyType remove(AnyType anyType);
 	
 	/**
 	 * 打印树(遍历树)
