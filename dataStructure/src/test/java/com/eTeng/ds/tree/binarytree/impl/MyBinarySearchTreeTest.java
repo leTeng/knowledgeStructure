@@ -31,7 +31,6 @@ public class MyBinarySearchTreeTest{
         myBinarySearchTree.insert(0);
         System.out.println(myBinarySearchTree.contains(0));
         System.out.println(myBinarySearchTree.contains(1));
-
     }
 
     @Test

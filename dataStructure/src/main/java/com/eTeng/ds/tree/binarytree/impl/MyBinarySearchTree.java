@@ -8,7 +8,7 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 	/**
 	 * 根节点
 	 */
-	private TreeNode<AnyType> root;
+	protected TreeNode<AnyType> root;
 	
 	private MyComparator myComparator;
 
@@ -45,7 +45,7 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 	}
 	
 	public void insert(AnyType anyType) {
-		makeInsert(anyType,root);
+		root = makeInsert(anyType,root);
 	}
 
 	public AnyType remove(AnyType anyType) {
@@ -69,9 +69,9 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 		}
 		int result = compareTo(node.data,anyType);
 		if(result < 0){
-			return makeContains(anyType,root.left);
+			return makeContains(anyType,node.left);
 		}else if(result > 0){
-			return makeContains(anyType,root.right);
+			return makeContains(anyType,node.right);
 		}else{
 			return true;
 		}
@@ -181,7 +181,7 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 		
 	}
 
-	protected int compareTo(AnyType compare , AnyType beCompare) {
+	protected int compareTo(AnyType beCompare , AnyType compare) {
 		
 		//提供自定义比较器
 		if(myComparator != null) {

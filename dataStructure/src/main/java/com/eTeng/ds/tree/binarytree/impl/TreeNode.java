@@ -11,6 +11,7 @@ class TreeNode<AnyType>{
     AnyType data; //元素数据
     TreeNode<AnyType> left; //左子树
     TreeNode<AnyType> right; //右子树
+    int height; //节点的高度
 
     public TreeNode(AnyType data) {
         this(data,null,null);
@@ -18,8 +19,14 @@ class TreeNode<AnyType>{
 
     public TreeNode(AnyType data , TreeNode<AnyType> left,
                     TreeNode<AnyType> right) {
-        this.data = data;
-        this.left = left;
-        this.right = right;
+      this(data,left,right,0);
     }
+    
+    public TreeNode(AnyType data , TreeNode<AnyType> left,
+            TreeNode<AnyType> right,int height) {
+		this.data = data;
+		this.left = left;
+		this.right = right;
+		this.height = height;
+}
 }
