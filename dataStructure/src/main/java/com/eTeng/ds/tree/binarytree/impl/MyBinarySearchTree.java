@@ -57,12 +57,41 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 		}
 	}
 
-
-	public void printTree() {
-		makePrint(root);
+	/**
+	 * 默认使用中序遍历
+	 */
+	public void printTree(){
+		printTreeMore(PrintForm.MID);
 	}
 
-	private boolean makeContains(AnyType anyType , TreeNode<AnyType> node) {
+	/**
+	 * 提供多种遍历方式（前中后）
+	 * @param printForm
+	 */
+	public void printTreeMore(PrintForm printForm) {
+		if(isEmpty()){
+			System.out.println("is empty tree");
+			return;
+		}
+		switch(printForm){
+			case MID:
+				makePrintMid(root);
+				break;
+			case PRE:
+				makePrintPre(root);
+				break;
+			case POST:
+				makePrintPost(root);
+				break;
+		}
+	}
+
+
+	public int height(){
+		return height(root);
+	}
+
+	protected boolean makeContains(AnyType anyType , TreeNode<AnyType> node) {
 
 		if(node == null) {
 			 return false;
@@ -78,7 +107,7 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 	}
 
 
-	private AnyType makefindMin(TreeNode<AnyType> node) {
+	protected AnyType makefindMin(TreeNode<AnyType> node) {
 
 		if(node == null){
 			return null;
@@ -97,7 +126,7 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 		}
 	}
 
-	private AnyType makefindMax(TreeNode<AnyType> node) {
+	protected AnyType makefindMax(TreeNode<AnyType> node) {
 		if(node == null){
 			 return  null;
 		}
@@ -176,16 +205,55 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 		return node;
 	}
 
-	private void makePrint(TreeNode<AnyType> node) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 *	遍历树 (中序)
+	 *  算法：
+	 *  	1.首先根节点遍历到最左边节点，然后如果节点有右子树。以当前节点为根节点，遍历到最边元素。
+	 *      2.遍历到最左边元素后，按照遍历的向上路径弹栈。
+	 * @param node
+	 */
+	private void makePrintMid(TreeNode<AnyType> node) {
+
+		if(node != null){
+			//當前根节点沿着最左边前进
+			makePrintMid(node.left);
+			//到达基准情况后，递归弹栈。输出数据
+			System.out.println(node.data);
+			//如果节点有右节点重复沿着当前节点最左边方向前进
+			makePrintMid(node.right);
+		}
+	}
+
+	/**
+	 * 遍历树(前序)
+	 * @param node
+	 */
+	private void makePrintPre(TreeNode<AnyType> node){
+
+		if(node != null){
+			System.out.println(node.data);
+			makePrintPre(node.left);
+			makePrintPre(node.right);
+		}
+	}
+
+	/**
+	 * 遍历树(后序)
+	 * @param node
+	 */
+	private void makePrintPost(TreeNode<AnyType> node){
+		if(node != null){
+			makePrintPost(node.left);
+			makePrintPost(node.right);
+			System.out.println(node.data);
+		}
 	}
 
 	protected int compareTo(AnyType beCompare , AnyType compare) {
 		
 		//提供自定义比较器
 		if(myComparator != null) {
-			return myComparator.compareTo(compare,beCompare);
+			return myComparator.compareTo(beCompare,compare);
 		}else {
 			if(compare instanceof Comparable &&
 					beCompare instanceof Comparable) {
@@ -196,12 +264,29 @@ public class MyBinarySearchTree<AnyType> implements BinarySearchTree<AnyType>{
 			}
 		}
 	}
-	
+
+	/**
+	 * 获取高度(通过后序遍历树)
+	 * @return
+	 */
+	private int height(TreeNode<AnyType> node){
+		if(node == null){
+			return -1;
+		}
+		return 1 + Math.max(height(node.left),height(node.right));
+	}
+
 	private static class Node<AnyType> extends TreeNode<AnyType>{
 
 		public Node(AnyType anyType , TreeNode<AnyType> left,
 						 TreeNode<AnyType> right){
 			super(anyType,left,right);
 		}
+	}
+
+	public enum  PrintForm{
+		PRE, //前序
+		POST, //后序
+		MID  //中序
 	}
 }

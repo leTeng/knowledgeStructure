@@ -84,4 +84,18 @@ public class MyBinarySearchTreeTest{
     @Test
     public void printTree(){
     }
+
+    @Test
+    public void height(){
+            myBinarySearchTree.insert(5);
+            myBinarySearchTree.insert(1);
+            myBinarySearchTree.insert(2);
+            myBinarySearchTree.insert(3);
+            myBinarySearchTree.insert(4);
+            myBinarySearchTree.insert(0);
+            myBinarySearchTree.insert(6);
+            myBinarySearchTree.insert(7);
+            myBinarySearchTree.insert(8);
+        System.out.println(myBinarySearchTree.height());
+    }
 }

@@ -22,7 +22,7 @@ public class AVLBinaryTree<AnyType> extends MyBinarySearchTree<AnyType>{
     }
 
     /**
-     *  只有insert() 或者 remove() 才需要进行树平衡，所以其他的操作
+     *  只有insert() 或者 remove() 才需要进行树平衡
      */
 
     
@@ -40,9 +40,32 @@ public class AVLBinaryTree<AnyType> extends MyBinarySearchTree<AnyType>{
      /*
       * 最后返回值是新的根节点，并且每个节点的高度会更新
       */
-     private AVLNode<AnyType> makeRemove(AnyType anyType , TreeNode<AnyType> node){
-        return null;
+     private TreeNode<AnyType> makeRemove(AnyType anyType , TreeNode<AnyType> node){
+
+         /*
+          * 基准情况
+          */
+         if(node == null){
+             return node;
+         }
+
+         int result = compareTo(node.data,anyType);
+         if(result < 0){
+            node.left = makeRemove(anyType,node.left);
+         }else if(result > 0){
+            node.right = makeRemove(anyType,node.right);
+         }else if(node.left != null && node.right != null){
+            //有双节点的删除
+             node.data = makefindMin(node.right);
+             node.right = makeRemove(node.data,node.right);
+         }else{
+            //只有单节点删除
+             node = node.left == null ? node.right : node.left;
+         }
+         //进行平衡
+         return balance(node);
      }
+
 
 	/*
      * 最后返回值是新的根节点，并且每个节点的高度会更新
@@ -91,6 +114,10 @@ public class AVLBinaryTree<AnyType> extends MyBinarySearchTree<AnyType>{
              }
          //右向节点不平衡
          }else if(height(node.right) - height(node.left) > ALLOW_HEIGHT_DIFF){
+             /* 判断使用平衡的方式。当时删除产生不平衡后，左--左或者右--右方式时：左--左 可能大于等于 左右
+                 或者 右--右 可能大于等于 右左。但是左右或者右左方式：左--左 小于等于 左右
+                 或者 右--右 小于 右左。
+              */
              if(height(node.right.right) >= height(node.right.left)){
                 //右-右式节点不平衡，单旋转
                  node = rotateWithRightChild(node);
@@ -154,20 +181,30 @@ public class AVLBinaryTree<AnyType> extends MyBinarySearchTree<AnyType>{
     	//再次左--左旋转,返回新的相对新节点
     	return rotateWithLeftChild(imbalance);	
     }
-    
+
+    /**
+     * 右--左 双旋转算法：
+     *      1.将失衡节点的右节点进行一次左--左旋转并且更新节点高度，
+     *          然后将子树的新根节点重新作为失衡节点的右子树。
+     *      2.失衡节点的右子树进行一次左-左单旋转之后，将失衡节点进行一次右右单旋转，
+     *          返回的新子树根节点是平衡后的子树根节点。
+     * @param imbalance 失衡节点
+     * @return
+     */
     private TreeNode<AnyType> doubleWithRightChild(TreeNode<AnyType> imbalance) {
     	//实现一次左--左单旋转
     	imbalance.right = rotateWithLeftChild(imbalance.right);
     	//再次右--右旋转,返回新的相对新节点
     	return rotateWithRightChild(imbalance);	
     }
+
     /**
      * 节点的高度，如果为空节点，定义为 -1
-     * @param left 节点
+     * @param node 节点
      * @return
      */
-     private int height(TreeNode<AnyType> left){
-         return left == null ? -1 : left.height;
+     private int height(TreeNode<AnyType> node){
+         return node == null ? -1 : node.height;
      }
 
     /**
