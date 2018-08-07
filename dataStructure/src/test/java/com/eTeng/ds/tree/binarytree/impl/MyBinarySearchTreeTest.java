@@ -98,4 +98,11 @@ public class MyBinarySearchTreeTest{
             myBinarySearchTree.insert(8);
         System.out.println(myBinarySearchTree.height());
     }
+
+    @Test
+    public void testsubString(){
+        String str = "abcde";
+        System.out.println(str.substring(0,1));
+        System.out.println(str.substring(1));
+    }
 }
