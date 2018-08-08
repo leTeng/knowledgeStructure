@@ -57,7 +57,7 @@ public class UseOfMap {
 		if(words == null) {
 			return null;
 		}
-		Map<String, List<String>> wordsMap = new TreeMap<>();
+		Map<String, List<String>> wordsMap = new TreeMap<String, List<String>>();
 		//进行长度分类
 		for(String word : words) {
 			update(wordsMap, String.valueOf(word.length()), word);
@@ -71,7 +71,7 @@ public class UseOfMap {
 			//循环去掉其中一个字母，然后将剩下的字母作为key和单词映射
 			for(int num = 0; num<groupNum; num++) {
 				Map<String,List<String>> removeCharMap = 
-						new TreeMap<>();
+						new TreeMap<String,List<String>>();
 				for(String word : groupWords) {
 					String removedChar = word.substring(0,num) + 
 							word.substring(num+1);
@@ -135,7 +135,7 @@ public class UseOfMap {
 			mapWordList = wordsMap.get(key);
 		}
 		if(mapWordList == null) {
-			mapWordList = new ArrayList<>();
+			mapWordList = new ArrayList<String>();
 			wordsMap.put(key, mapWordList);
 		}
 		mapWordList.add(value);
