@@ -122,5 +122,9 @@ public class MyTreeSet1<T> implements MyTreeSet<T>{
         }
     }
 
-    private enum Find
+    private enum Find{
+
+        LEFT,
+        Right
+    }
 }
