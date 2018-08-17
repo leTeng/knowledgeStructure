@@ -1,7 +1,7 @@
 package com.eTeng.ds.list.interfaces;
 
 import java.util.Iterator;
-public interface MyCollection<AnyType>{
+public interface MyCollection<AnyType> extends Iterable<AnyType>{
 
 
     /**

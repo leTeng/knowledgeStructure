@@ -222,7 +222,10 @@
             4.2  定理: 使用平方探测时,表的大小为素数,表的元素小于表大小一半(λ < 0.5),那么
                        散列表总能插入数据(不会发生位置冲突)
                                  
-                     
+            4.3 实现: 注意删除中要进行懒删除,否则丢失向下查找的路径。所以用一个抽象
+                      数据进行描述, 有属性element和isActive表示是否已经删除。当进行
+                      表的扩容时,已经标为删除的元素不要迁移到新的散列表。
+                      迁移的过程中需要重新迁移。        
         5.双散列
         
             5.1 描述：通过散列函数计算出关键字散列位置，如发生位置冲突，使用另外一个散列函数计算位置
@@ -235,4 +238,26 @@
                                          
         6.再散列
             
-                                                         
+         
+        7.闪存散列代码（hashcode）
+        
+            在java的String对象的hashcode()中,hashcode计算后就会存储起来,
+            第二次不用重新计算。由于String是不可改变,所以hashcode是有效的。
+            一般有用于在散列的时候，不用再次计算hashcoe。或在扩容时,已经储存的
+            key的散列代码已经被存储，再次散列不需要重新计算hashcde
+            
+            闪存散列代码实现：
+                
+                public final class String{
+                    
+                    private int hash = 0;
+                    public int hashcode(){
+                        if(hash != 0){
+                            return hash;
+                        }
+                        for(int i=; i<length; i++){
+                            hash = 31 * hash + (int)charAt(i);
+                        }
+                        return hash;
+                    }                                                 
+                }
