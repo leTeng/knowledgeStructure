@@ -68,4 +68,12 @@ public class QuadraticProbingHashTableTest{
         insert();
         System.out.println(quadraticProbingHashTable.size());
     }
+
+    @Test
+    public void testArrIndex(){
+        int index = -1;
+        Integer [] ints = {1,1,2};
+        Integer anInt = ints[-1];
+        System.out.println(anInt);
+    }
 }
