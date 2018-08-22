@@ -87,7 +87,7 @@ public class CuckooHash<T> implements MyHash<T>{
 
     public void makeEmpty(){
         for(T element : elements){
-            element = null;
+          element = null;
         }
         currentSize = 0;
     }
