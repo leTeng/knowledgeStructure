@@ -15,10 +15,10 @@ public class SortTest{
     public void setUp() throws Exception{
         sort = new Sort<Integer>();
         random = new Random();
-        arr = new Integer[20000000];
+        arr = new Integer[100];
 //        arr = new Integer[]{1,3,54,64,23,7,2,24,652,234,6,44};
-        for(int i=0 ; i < 20000000; i++){
-            arr[i] = random.nextInt(20000000);
+        for(int i=0 ; i < 100; i++){
+            arr[i] = random.nextInt(100);
         }
     }
 
@@ -33,6 +33,22 @@ public class SortTest{
         long end = new Date().getTime();
         System.out.println((end - start));
     }
+
+
+    @Test
+    public void bubbleSort(){
+        System.out.println(Arrays.toString(arr));
+        sort.bubbleSort(arr);
+        System.out.println(Arrays.toString(arr));
+    }
+
+    @Test
+    public void selectSort(){
+        System.out.println(Arrays.toString(arr));
+        sort.selectSort(arr);
+        System.out.println(Arrays.toString(arr));
+    }
+
 
     @Test
     public void shellSort(){
@@ -66,6 +82,16 @@ public class SortTest{
     }
 
     @Test
+    public void qiuckSort(){
+//        long start = new Date().getTime();
+                System.out.println(Arrays.toString(arr));
+        sort.quickSort(arr);
+        System.out.println(Arrays.toString(arr));
+//        long end = new Date().getTime();
+//        System.out.println((end - start));
+    }
+
+    @Test
     public void sortPerformance(){
         long start = new Date().getTime();
 
@@ -73,16 +99,28 @@ public class SortTest{
         long end01 = new Date().getTime();
         System.out.println("insert: " +(end01 - start));
 
-        sort.shellSort(arr);
+        sort.selectSort(arr);
         long end02 = new Date().getTime();
-        System.out.println("shell: "+(end02 - end01));
+        System.out.println("insert: " +(end02- end01));
+
+        sort.bubbleSort(arr);
+        long end03 = new Date().getTime();
+        System.out.println("insert: " +(end03- end02));
+
+        sort.shellSort(arr);
+        long end04 = new Date().getTime();
+        System.out.println("shell: "+(end04- end03));
 
         sort.headSort(arr);
-        long end03 = new Date().getTime();
-        System.out.println(("head: "+(end03 - end02)));
+        long end05 = new Date().getTime();
+        System.out.println(("head: "+(end05- end04)));
 
         sort.mergeSort(arr);
-        long end04 = new Date().getTime();
-        System.out.println(("merge: "+(end04 - end03)));
+        long end06 = new Date().getTime();
+        System.out.println(("merge: "+(end06- end05)));
+
+        sort.quickSort(arr);
+        long end07 = new Date().getTime();
+        System.out.println(("qiuck: "+(end07- end06)));
     }
 }

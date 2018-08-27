@@ -1,7 +1,7 @@
 package com.eTeng.ds.sort;
 
-import javax.print.attribute.standard.MediaSize;
-import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @FileName Sort.java
@@ -36,6 +36,38 @@ public class Sort<T extends Comparable<? super T>>{
         }
     }
 
+
+    /**
+     * 冒泡排序
+     * @param items
+     */
+    public void bubbleSort(T [] items){
+
+        for(int i=0; i<items.length-1; i++){
+            for(int j=0; j<items.length-(1+i);j++){
+                if(items[j].compareTo(items[j+1]) > 0){
+                    replaceReferences(items,j,j+1);
+                }
+            }
+        }
+    }
+
+    /**
+     * 选择排序
+     * @param items
+     */
+    public void selectSort(T [] items){
+
+        for(int i=0; i<items.length-1; i++){
+            int minIndex = i;
+            for(int j=i+1; j<items.length; j++){
+                if(items[j].compareTo(items[minIndex]) < 0){
+                    minIndex = j;
+                }
+            }
+            replaceReferences(items,i,minIndex);
+        }
+    }
 
     /**
      * 希尔排序(缩减增量排序)：使用一个增量序列,这个序列的增量是递减的。对于n个元素的数组元素k与
@@ -178,5 +210,108 @@ public class Sort<T extends Comparable<? super T>>{
         for(int i = 0; i < numElement; i++,rightEnd--){
             arr[rightEnd] = tempArr[rightEnd];
         }
+    }
+
+
+    public void simpleQuickSort(List<T> items){
+
+        List<T> smalls = new ArrayList<T>();
+        List<T> sname = new ArrayList<T>();
+        List<T> larger = new ArrayList<T>();
+
+        if(items.size() > 0){
+            T choseItem = items.get(items.size() / 2);
+            for(T item : items){
+                if(item.compareTo(choseItem) > 0){
+                    larger.add(item);
+                }else if(item.compareTo(choseItem) < 0){
+                    smalls.add(item);
+                }else{
+                    sname.add(item);
+                }
+            }
+            simpleQuickSort(smalls);
+            simpleQuickSort(larger);
+
+            items.clear();
+            items.addAll(smalls);
+            items.addAll(sname);
+            items.addAll(larger);
+        }
+    }
+
+    public void quickSort(T [] items){
+        quickSort(items,0,items.length-1);
+    }
+
+    /**
+     * 快速排序
+     *        算法：使用分治算法。将数组递归的分成n个子数组,并且使用三数取中值
+     *              作为子数组的参考值(比较)。并且将参考值放到的相对子数组的倒数第二位,
+     *              三数的最小值放到相对子数组的第一位,最大值放到子数组的最后一位。
+     *              这样的好处为。当指针向左或者向后移动时,不会越过数组的界。
+     *              因为参考值肯定比最小值大,比最大值小。到达临界会指针停止。
+     *
+     *        注意：当子数组小于10时,子数组进行插入排序。当n<20插入比快速排序快。因为
+     *              快速排序是递归的。这n<20时,使用插入排序和继续使用的快速排序快15%。
+     *              同时可以不用处理取中值时,只有两个或者一个元素。
+     * @param items
+     * @param left
+     * @param right
+     */
+    private void quickSort(T [] items , int left ,int right){
+
+        //左右间隔截止為 10
+        final int CUTOFF = 15;
+
+        if(left + CUTOFF <= right){
+            int i = left;
+            int j = right - 1;
+            int pivot = getMedianByThree(items,left,right);
+            while(true){
+                while(items[++i].compareTo(items[pivot]) < 0){}
+                while(items[--j].compareTo(items[pivot]) > 0){}
+                if(i < j){
+                    replaceReferences(items,i,j);
+                }else{
+                    break;
+                }
+            }
+            replaceReferences(items,i,right-1);
+            quickSort(items,left,i-1);
+            quickSort(items,i+1,right);
+        }else{
+            //子数组元素个数小于限制个数进行的插入排序
+            for(int i = left; i<=right; i++){
+                T temp = items[i];
+                int j;
+                for(j = i; j>left && temp.compareTo(items[j-1]) < 0; j--){
+                    items[j] = items[j-1];
+                }
+                items[j] = temp;
+            }
+        }
+    }
+
+    private int getMedianByThree(T [] items , int left , int right){
+
+        int center = (left + right) / 2;
+        if(items[center].compareTo(items[left]) < 0){
+            replaceReferences(items,left,center);
+        }
+        if(items[right].compareTo(items[left]) < 0){
+            replaceReferences(items,left,right);
+        }
+        if(items[right].compareTo(items[center]) < 0){
+            replaceReferences(items,center,right);
+        }
+        replaceReferences(items,center,right - 1);
+        return right-1;
+    }
+
+    private void replaceReferences(T[] items , int i , int j){
+        T temp = items[i];
+        items[i] = items[j];
+        items [j] = temp;
     }
 }
