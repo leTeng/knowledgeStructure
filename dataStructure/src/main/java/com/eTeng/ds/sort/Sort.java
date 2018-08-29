@@ -1,5 +1,6 @@
 package com.eTeng.ds.sort;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import java.util.List;
  * @Description
  */
 public class Sort<T extends Comparable<? super T>>{
+
+    public static final int CUTOFF = 5;
 
     /**
      * 插入排序,平均时间复杂度为O(n^2),如果是已经排序的平均复杂度为O(n)。
@@ -261,15 +264,17 @@ public class Sort<T extends Comparable<? super T>>{
      */
     private void quickSort(T [] items , int left ,int right){
 
-        //左右间隔截止為 10
-        final int CUTOFF = 15;
+        //子数组元素个数限制为10,当小于等于10,进行插入排序。
+
 
         if(left + CUTOFF <= right){
             int i = left;
             int j = right - 1;
             int pivot = getMedianByThree(items,left,right);
             while(true){
+                //左指针
                 while(items[++i].compareTo(items[pivot]) < 0){}
+                //右指针
                 while(items[--j].compareTo(items[pivot]) > 0){}
                 if(i < j){
                     replaceReferences(items,i,j);
@@ -281,7 +286,7 @@ public class Sort<T extends Comparable<? super T>>{
             quickSort(items,left,i-1);
             quickSort(items,i+1,right);
         }else{
-            //子数组元素个数小于限制个数进行的插入排序
+            //插入排序
             for(int i = left; i<=right; i++){
                 T temp = items[i];
                 int j;
@@ -313,5 +318,51 @@ public class Sort<T extends Comparable<? super T>>{
         T temp = items[i];
         items[i] = items[j];
         items [j] = temp;
+    }
+
+
+    public void qiuckSelect(T[] items, int k){
+        qiuckSelect(items,0,items.length-1,k);
+    }
+
+    /**
+     * 快速选择
+     * @param items
+     * @param left
+     * @param right
+     * @param k
+     */
+    private void qiuckSelect(T [] items , int left , int right , int k){
+
+        if(left + CUTOFF <= right){
+            int i = left;
+            int j = right - 1;
+            int pivot = getMedianByThree(items,left,right);
+            while(true){
+                while(items[++i].compareTo(items[pivot]) < 0){}
+                while(items[--j].compareTo(items[pivot]) > 0){}
+                if(i < j){
+                    replaceReferences(items,i,j);
+                }else{
+                    break;
+                }
+            }
+            replaceReferences(items,i,right-1);
+            if(k <= i){
+                qiuckSelect(items,left,i-1,k);
+            }else if(k > i+1){
+                qiuckSelect(items,i+1,right,k);
+            }
+        }else{
+            //插入排序
+            for(int i = left; i<=right; i++){
+                T temp = items[i];
+                int j;
+                for(j = i; j>left && temp.compareTo(items[j-1]) < 0; j--){
+                    items[j] = items[j-1];
+                }
+                items[j] = temp;
+            }
+        }
     }
 }
