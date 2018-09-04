@@ -333,8 +333,109 @@
                     setbe   D         setna              D <-- CF | ZF              低于或等于(无符号 <=)
              
              2.条件跳转到程序某个部分
+             
+                 --描述：1.正常的情况下程序是一步步往下执行的,当程序遇到JUMP指令时程序
+                          会跳转到一个新的指令地址(程序计数器会更新)。这个新的指令地址
+                          在汇编代码里使用一个标签标记(.lable:),在生成目标代码时,汇
+                          编器会对跳转指令的跳转目标(新的指令地址)进行编码。
+             
+                 --JUMP(跳转指令)
+                    
+                        指令              同义名                 跳转条件                    描述
+                        
+                        jmp   Lable                              1                      直接跳转(无条件)  
+                        jmp   *(Operand)                         1                      间接跳转
+                        
+                        je    Lable         jz                   ZF                     相等/零
+                        jne   Lable         jnz                 ~ZF                     不相等/非零
+                        
+                        js    Lable                             SF                      负数   
+                        jns   Lable                             ~SF                     非负数 
+                        
+                        jg    Lable         jnle                ~(SF & OF) & ~ZF        大于(有符号 >)
+                        jge   Lable         jnl                 ~(SF ^ OF)              大于或等于(有符号 >=)
+                        jl    Lable         jnge                SF ^ OF                 小于(有符号 <)
+                        jle   Lable         jng                 (SF ^ OF) | ZF          小于或等于(有符号 <=)
+                        
+                        ja    Lable         jnbe                ~CF & ~ZF               超过(无符号 >)
+                        jae   Lable         jnb                 ~CF                     超过或等于(有符号 >=)
+                        jb    Lable         jnae                CF                      低于(有符号 <)
+                        jbe   Lable         jna                 CF | ZF                 低于或等于(有符号 <=)
+                        
+                        注意：jmp指令是无条件跳转,跳转的目标地址操作数是一个标签或者
+                             寄存器的内存地址(间接跳转)。jmp指令的条件码组合与set指
+                             令条件码组合一样。
+                        
+                        
+                 --跳转指令编码
+             
+                        描述：在汇编代码中,跳转指令的目标地址使用一个符号标签标记(Lable),在
+                            生成目标代码链接器会给跳转指令的目标地址进行编码。有两种的编码的
+                            方式。最常用的编码方式是：相对的PC(PC-raletive)。
+                            
+                            第一种：跳转目标地址和跳转指令的下一条指令地址的差作为跳转指令的编码,
+                                   得出的结果(偏移量),编码为1、2、4个字节。
+                                   
+                            第二种：直接把目标地址(4个字节)作为跳转指令的编码(绝对地址)。
+                            
+                            注意：汇编器和链接器会选择合适的方式进行跳转编码,每一个编码
+                     
+             
+                 --跳转控制实现条件分支   
+                    
+                        C代码                                             汇编代码
+                                                                        
+                                                                        %rdi in a  %rsi in b                                                                                            
+                        long  absDiff(long a long b){                   comq  %rsi   %rdi   // compare a b   
+                                long result;                            jge   .L1   // a >= b 
+                               if(a<b){                                 movq %rsi  %rax  // v = b
+                                 result = b-a;                          subq %rdi  %rax  // v -= a
+                                                                        ret
+                               }else{                                   .L1:        // a >= b 
+                                result = a-b;                           movq %rdi %rax  // v = a
+                               }                                        subq %rsi %rax  // v -= b
+                               return result;                           ret
+                        }
+                        
+                   
+                   对于条件控制汇编编译和goto语句实现类似,会给每个条件插入两个分支。
+                        总有一个分支满足条件,模板为：
+                    
+                        t = test-expr
+                        if(!t){
+                            goto false
+                        }
+                        then-statement
+                        goto done
+                        
+                      false:
+                        else-statement
+                        
+                      done:
+             
+             
              3.有条件传送数据
-   
+                
+                --描述：简单的条件控制实现条分支,虽然简单而又通用。但是现代处理器上
+                       运行可能会很低效。一种代替的策略是使用条件数据传送实现条件
+                       分支。条件数据传送实现条件分支表示为：首先计算出两个分支的
+                       结果,默认选择一个结果。根据条件判断,如果条件满足使用另一个
+                       结果代替默认结果。不过这个策略的使用很受限制。如果能使用该
+                       策略使用一条指令就能实现。
+                
+                --指令：
+                    
+                    指令              同义名                 传送条件                描述
+                    
+                    cmove            comvz                   ZF                  相等/零
+                    cmovne           comvnz                  ~ZF                 不相等/非零
+                    comvs                                    SF                  负数     
+                    comvns                                   ~SF                 非负数   
+                
+                
+                
+             
+                
    
     3.8 循环指令
      
