@@ -4,7 +4,7 @@ import com.eTeng.ds.hash.interfaces.MyHash;
 
 /**
  * @FileName QuadraticProbingHashTable.java
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/17
  * @Description
  */

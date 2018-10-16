@@ -5,7 +5,7 @@ import com.eTeng.ds.heap.interfaces.MyHeap;
 
 /**
  * @FileName LeftistHeap.java
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/22
  * @Description 左式堆(可支持合并的二叉堆),所有操作依靠合并完成。
  */

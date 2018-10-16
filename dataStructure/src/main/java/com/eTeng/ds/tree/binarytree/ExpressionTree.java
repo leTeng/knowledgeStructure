@@ -6,8 +6,8 @@ import com.eTeng.ds.stack.practice.Practice_3_23_a;
 import com.eTeng.ds.stack.practice.base.BaseStack;
 
 /**
- * @FileName
- * @Author 梁怡腾
+ * @FileName ExpressionTree.java
+ * @Author eTeng
  * @Date 2018/8/1
  * @Description 二叉树的一种应用。表达式树
  */

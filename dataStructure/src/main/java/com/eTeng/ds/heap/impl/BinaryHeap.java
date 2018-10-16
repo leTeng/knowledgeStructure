@@ -7,7 +7,7 @@ import java.util.Comparator;
 
 /**
  * @FileName BinaryHeap.java
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/21
  * @Description 二叉堆的实现(数组)
  */

@@ -44,5 +44,4 @@ public class MyArrayStackTest {
 		testPop();
 		System.out.println(myArrayStack.top());
 	}
-	
 }

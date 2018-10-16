@@ -5,7 +5,7 @@ import com.eTeng.ds.stack.interfaces.MyStack;
 
 /**
  * @FileName
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/7/30
  * @Description
  */

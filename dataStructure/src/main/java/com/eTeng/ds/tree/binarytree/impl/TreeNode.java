@@ -2,7 +2,7 @@ package com.eTeng.ds.tree.binarytree.impl;
 
 /**
  * @FileName
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/2
  * @Description 基础的树节点数据抽象
  */

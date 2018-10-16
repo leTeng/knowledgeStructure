@@ -4,7 +4,7 @@ import com.eTeng.ds.heap.interfaces.MyHeap;
 
 /**
  * @FileName BinomialQueue.java
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/23
  * @Description
  */

@@ -6,7 +6,7 @@ import java.util.ListIterator;
 
 /**
  * @FileName
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/7/27
  * @Description 表、栈、队的练习题
  */

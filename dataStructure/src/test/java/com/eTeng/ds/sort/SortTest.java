@@ -139,5 +139,24 @@ public class SortTest{
 
         int sum = (i<<4) + (i<<3) - (i<<0);
         System.out.println(sum);
+
+    }
+
+    @Test
+    public void testBitMap(){
+
+        byte [] bit = new byte[0x7fffff];
+        bit[0] = 1;
+        bit[1] = 1;
+        bit[2] = 1;
+        bit[3] = 1;
+        bit[10] = 1;
+
+        byte b = bit[100];
+        if(b == 1){
+            System.out.println("integer is exist");
+        }else{
+            bit[3] = 1;
+        }
     }
 }

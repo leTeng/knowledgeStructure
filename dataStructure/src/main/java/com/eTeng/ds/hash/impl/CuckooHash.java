@@ -6,7 +6,7 @@ import java.util.Random;
 
 /**
  * @FileName CuckooHash.java
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/20
  * @Description
  */

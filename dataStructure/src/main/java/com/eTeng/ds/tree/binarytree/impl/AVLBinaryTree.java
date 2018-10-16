@@ -4,7 +4,7 @@ import com.eTeng.ds.tree.binarytree.interfaces.MyComparator;
 
 /**
  * @FileName
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/2
  * @Description VAL的实现，基于标准的二叉树，对树的add() 或 remove() 通过条件进行平衡
  */

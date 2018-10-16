@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 /**
  * @FileName SeparateChainHashTable.java
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/16
  * @Description
  */

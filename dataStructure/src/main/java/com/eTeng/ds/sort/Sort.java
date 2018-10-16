@@ -1,12 +1,11 @@
 package com.eTeng.ds.sort;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @FileName Sort.java
- * @Author 梁怡腾
+ * @Author eTeng
  * @Date 2018/8/23
  * @Description
  */
