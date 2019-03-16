@@ -15,9 +15,9 @@ public class SortTest{
     public void setUp() throws Exception{
         sort = new Sort<Integer>();
         random = new Random();
-        arr = new Integer[20];
+        arr = new Integer[1000];
 //        arr = new Integer[]{1,3,54,64,23,7,2,24,652,234,6,44};
-        for(int i=0 ; i < 20; i++){
+        for(int i=0 ; i < 1000; i++){
             arr[i] = random.nextInt(100);
         }
     }
@@ -93,10 +93,25 @@ public class SortTest{
 
     @Test
     public void qiuckSelect(){
-        System.out.println(Arrays.toString(arr));
-        sort.qiuckSelect(arr,11);
-        System.out.println(Arrays.toString(arr));
+        Integer [] intArr = new Integer[10000000];
+        for(int i=0 ; i < 10000000; i++){
+            intArr[i] = random.nextInt(100000);
+        }
+
+        long start = new Date().getTime();
+        System.out.println(start);
+        sort.qiuckSelect(intArr,11);
+        long end = new Date().getTime();
+        System.out.println(end);
+        System.out.println((end - start) / 1000.0);
     }
+
+    @Test
+    public void streamlineQiuckSort(){
+        sort.streamlineQiuckSort(arr);
+        System.out.println(arr);
+    }
+
     @Test
     public void sortPerformance(){
         long start = new Date().getTime();
@@ -134,9 +149,8 @@ public class SortTest{
     public void test(){
 
         //10 * 23
-        byte i = 0x0A;
+        byte i = 10;
         int j = 0xff;
-
         int sum = (i<<4) + (i<<3) - (i<<0);
         System.out.println(sum);
 
