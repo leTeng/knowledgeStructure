@@ -182,6 +182,14 @@ public class Sort<T extends Comparable<? super T>>{
         }
     }
 
+    /**
+     * 并归排序
+     * @param arr
+     * @param tempArr
+     * @param leftPos
+     * @param rightPos
+     * @param rightEnd
+     */
     private void merge(T [] arr , T [] tempArr, int leftPos ,
                        int rightPos , int rightEnd){
         //计算左边的上界
@@ -215,6 +223,10 @@ public class Sort<T extends Comparable<? super T>>{
     }
 
 
+    /**
+     * 模拟快速排序
+     * @param items
+     */
     public void simpleQuickSort(List<T> items){
 
         List<T> smalls = new ArrayList<T>();
@@ -297,6 +309,13 @@ public class Sort<T extends Comparable<? super T>>{
         }
     }
 
+    /**
+     * 获取前中后三个元素,并将元素排序好,放入对应的位置
+     * @param items
+     * @param left
+     * @param right
+     * @return
+     */
     private int getMedianByThree(T [] items , int left , int right){
 
         int center = (left + right) / 2;
@@ -313,11 +332,61 @@ public class Sort<T extends Comparable<? super T>>{
         return right-1;
     }
 
+    /**
+     * 交换元素位置
+     * @param items 元素集合
+     * @param i 元素一
+     * @param j 元素二
+     */
     private void replaceReferences(T[] items , int i , int j){
         T temp = items[i];
         items[i] = items[j];
         items [j] = temp;
     }
+
+    /**
+     * 简略版的快速排序
+     * @param items 元素集合
+     * @param left 开始元素位置
+     * @param right 结束元素位置
+     */
+    private void streamlineQiuckSort(T [] items,int left,int right){
+
+        // 只有一个元素结束排序
+        if(left >= right){
+            return;
+        }
+        // 最后一个元素为枢纽元
+        T pivot = items[right];
+        int i = left;
+        int j = right;
+        while(true){
+            // 移动左指针,直到找到大于枢纽元为止
+            while(i < right && items[i++].compareTo(pivot) < 0);
+            // 移动右指针,直到找到小于枢纽元为止
+            while(j > left && items[--j].compareTo(pivot) > 0);
+            // 左右指针没有越界,交换元素
+            if(--i < j){
+                T temp = items[i];
+                items[i] = items[j];
+                items[j] = temp;
+            }else{
+                break;
+            }
+        }
+        // 将枢纽元放入到正确的位置
+        T temp = items[i];
+        items[i] = pivot;
+        items[right] = temp;
+        // 递归
+        streamlineQiuckSort(items,left,i-1);
+        streamlineQiuckSort(items,i+1,right);
+    }
+
+    public void streamlineQiuckSort(T [] items){
+        streamlineQiuckSort(items,0,items.length-1);
+    }
+
 
 
     public void qiuckSelect(T[] items, int k){
