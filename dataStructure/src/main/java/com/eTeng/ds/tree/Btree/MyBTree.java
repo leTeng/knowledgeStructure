@@ -21,7 +21,7 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
     /**
      * 树的度
      */
-    private static  final int DEGREE = 20;
+    private static  final int DEGREE = 4;
 
     /**
      * 树高度
@@ -65,6 +65,7 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
             throw new IllegalArgumentException("key must not be null");
         }
         // 分裂新的节点
+        
         Node<Key,Value> newNode = insert(root,key,val,height);
         // 树元素累加
         elementCount++;
@@ -91,12 +92,15 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
             throw new IllegalArgumentException("key must no be null");
         }
         Node<Key,Value> newRoot = remove(root,key,height);
-        if(newRoot == null || newRoot.equals(root)){
-            return;
+        // 元素总数-1
+        elementCount--;
+        // 根元素小于 DEGREE / 2
+        if(root.count < DEGREE / 2){
+            // 合并产生新的根
+            root = newRoot;
+            // 树高度-1
+            height--;
         }
-        // 产生新的根
-        root = newRoot;
-        height--;
     }
 
     /**
@@ -109,26 +113,21 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
         Entry<Key,Value> [] childs = currNode.childs;
         // 叶子节点
         if(height == 0){
-            for(int i = 0; i < currNode.count; i++){
-                // 找到元素
-                if(childs[i].key.compareTo(key) == 0){
-                    return childs[i];
-                }
-            }
+            int pos = accuratePos(currNode,key);
+            return pos < currNode.count ? currNode.childs[pos] : null;
         }else{
             // 树枝节点(内部节点)
-            int posistion = posistion(currNode,key);
-            return (Entry<Key,Value>)search(childs[posistion].next,key,height - 1);
+            int posistion = internalPos(currNode,key);
+            return search(childs[posistion].next,key,height - 1);
         }
-        return null;
     }
 
     /**
      * 添加节点
-     * @param currNode 当前节点
+     * @param currNode 相对根节点
      * @param key 键
      * @param val 值
-     * @param height 树高度
+     * @param height 树的相对高度
      * @return
      */
     private Node<Key,Value> insert(Node<Key,Value> currNode,Key key,Value val,int height){
@@ -141,11 +140,11 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
         // 外部节点(树叶)
         if(height == 0){
             // 定位
-            pos = pos(currNode,key);
+            pos = externalPos(currNode,key);
         }else{
             // 内部节点(树枝)
             // 定位
-            pos = posistion(currNode,key);
+            pos = internalPos(currNode,key);
             // 产生新的右节点
             Node<String,Integer> newNode = insert(currNode.childs[pos++].next,key,val,height-1);
             // 没有节点分裂
@@ -171,67 +170,123 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
         return split(currNode);
     }
 
+    /**
+     * 删除节点
+     * @param currNode 相对根节点
+     * @param key 关键字
+     * @param height 树的相对高度
+     * @return
+     */
     public Node<Key,Value> remove(Node<Key,Value> currNode,Key key,int height){
         // 位置
         int pos;
         // 外部节点(树叶)
         if(height == 0){
-            pos = pos(currNode,key);
+            pos = accuratePos(currNode,key);
         }else{
             // 内部节点(树枝)
-            pos = posistion(currNode,key);
-            Node<Key,Value> mergeNode = remove(currNode.childs[pos].next,key,height-1);
+            pos = internalPos(currNode,key);
+            Node<Key,Value> next = currNode.childs[pos].next;
+            // 左邻居节点孩子数
+            int leftCount = hasLeft(next) ? next.left.count : 0;
+            // 右邻居节点孩子数
+            int rightCount = hasRight(next) ? next.right.count : 0;
+            Node<Key,Value> mergeNode = remove(next,key,height-1);
             if(mergeNode == null){
                 return null;
             }
             // 更新key
-            currNode.childs[pos].key = mergeNode.childs[0].key;
-            // 节点没变化,没发生合并
-            if(mergeNode.equals(currNode)){
+            if(hasLeft(next) && next.left.count < leftCount){
+                // 领养左邻居的孩子
+                currNode.childs[pos].key = mergeNode.childs[0].key;
+            }else if(hasRight(next) && next.right.count < rightCount){
+                // 领养右邻居的孩子
+                currNode.childs[pos + 1].key = mergeNode.right.childs[0].key;
+            }
+            // 节点数据项没有清空,没发生合并
+            if(next.count != 0){
                 return null;
             }
         }
-        // 删除节点和领养孩子
-        if(currNode.count + currNode.previous.count > DEGREE){
+        // 删除节点
+        for(int i = pos; i < currNode.count - 1; i++){
             // 集合从pos开始，向前移动一位
-            for(int i = pos; i<currNode.count; i++){
-                currNode.childs[i] = currNode.childs[i+1];
-            }
-            // 当前节点孩子数-1
-            currNode.count--;
-            // 领养
-            if(currNode.count <= DEGREE / 2){
-                // 集合从最后一位开始，向后移动一位
-                for(int i = currNode.count; i > 0; i--){
-                    currNode.childs[i] = currNode.childs[i-1];
-                }
-                // 领养后放在第一位
-                currNode.childs[0] = currNode.previous.childs[currNode.previous.count-1];
-                // 当前节点孩子数+1
-                currNode.count++;
-                // 邻居及节点孩子数-1
-                currNode.previous.count--;
-                // 返回当前节点
-                return currNode;
-            }
+            currNode.childs[i] = currNode.childs[i+1];
+        }
+        // 当前节点孩子数-1
+        currNode.count--;
+        // 根节点或者当前节点的儿子数未少于临界点
+        if((!hasLeft(currNode) && !hasRight(currNode)) || currNode.count > DEGREE / 2){
             return null;
-        }else{
+        }
+        if(hasLeft(currNode) && currNode.count + currNode.left.count > DEGREE){
+            // 领养左邻居孩子
+            return adoption(currNode.left,currNode,0,currNode.left.count-1);
+        }else if(hasRight(currNode) && currNode.count + currNode.right.count > DEGREE){
+            // 领养右邻居孩子
+            return adoption(currNode.right,currNode,currNode.count,0);
+        }else {
             // 合并节点
-            int j = 0;
-            // 将右边节点的孩子合并到左边节点的孩子列表
-            for(int i = currNode.previous.count - 1; i < currNode.count; i--,j++){
-                currNode.previous.childs[i] = currNode.childs[j];
+            if(hasLeft(currNode)){
+                return merge(currNode.left,currNode,currNode.left.count,currNode.count);
             }
-            // 合并后节点孩子数 + j
-            currNode.previous.count = currNode.previous.count + j;
-            // 返回新的节点
-            return currNode.previous;
+            return merge(currNode.right,currNode,currNode.right.count,currNode.count);
         }
     }
 
 
     private boolean less(Key key1,Key key2){
         return key1.compareTo(key2) < 0;
+    }
+
+    /**
+     * 合并当前节点到目标节点
+     * @param target 目标节点
+     * @param origin 当前节点
+     * @return 合并后的目标节点
+     */
+    private Node<Key, Value> merge(Node<Key,Value> target,Node<Key,Value> origin,int destPos,int length){
+        // 合并节点
+        int j = 0;
+        // 目标集合向后移动length
+        for(int i = target.count; i < length; i--){
+            target.childs[i] = target.childs[i-1];
+        }
+        // 将右边节点的孩子合并到左边节点的孩子列表
+        for(int i = destPos; j < length; i++,j++){
+            target.childs[i] = origin.childs[j];
+        }
+        // 合并后节点孩子数 + j
+        target.count = target.count + j;
+        origin.count = 0;
+        // 返回新的节点
+        return target;
+    }
+
+    /**
+     * 领养邻居节点孩子
+     * @param target 邻居节点
+     * @param origin 当前节点
+     * @param place 领养的孩子存放位置
+     * @param origin 领养孩子所在位置
+     * @return 当前节点
+     */
+    private Node<Key,Value> adoption(Node<Key,Value> neighbor,Node<Key,Value> origin,int place,int target){
+        // 集合从最后一位开始，向后移动一位
+        for(int i = origin.count; i > place; i--){
+            origin.childs[i] = origin.childs[i-1];
+        }
+        // 领养后放在第一位
+        origin.childs[place] = neighbor.childs[target];
+        for(int i = target; i < neighbor.count - 1; i++){
+            neighbor.childs[i] = neighbor.childs[i+1];
+        }
+        // 当前节点孩子数+1
+        origin.count++;
+        // 邻居及节点孩子数-1
+        neighbor.count--;
+        // 返回当前节点
+        return origin;
     }
 
     /**
@@ -244,8 +299,14 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
         int grant = DEGREE % 2 == 0 ? DEGREE / 2 : DEGREE / 2 + 1;
         // 必须保证每个节点的孩子数 > DEGREE / 2
         Node<Key,Value> splitNode = new Node(grant);
-        // 设置邻居节点
-        splitNode.previous = currNode;
+        // 如果在中间的节点分裂，需要更新右边节点的左邻居
+        if(currNode.right != null){
+            currNode.right.left = splitNode;
+        }
+        // 设置左邻居节点
+        splitNode.left = currNode;
+        // 设置右邻居节点
+        currNode.right = splitNode;
         // 修改被分裂节点的孩子数
         currNode.count = DEGREE - grant;
         // 分裂
@@ -257,6 +318,24 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
     }
 
     /**
+     * 是否拥有左儿子
+     * @param node 当前节点
+     * @return
+     */
+    private boolean hasLeft(Node<Key,Value> node){
+        return node.left != null;
+    }
+
+    /**
+     * 是否拥有右儿子
+     * @param node 当前节点
+     * @return
+     */
+    private boolean hasRight(Node<Key,Value> node){
+        return node.right != null;
+    }
+
+    /**
      * 树节点
      */
     private static class Node<Key,Value>{
@@ -264,8 +343,10 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
         int count;
         // 孩子列表
         Entry<Key,Value>[] childs;
-        // 邻居节点
-        Node<Key,Value> previous;
+        // 左邻居节点
+        Node<Key,Value> left;
+        // 右邻居节点
+        Node<Key,Value> right;
 
         public Node(int count){
             this.count = count;
@@ -290,7 +371,15 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
         }
     }
 
-    private int posistion(Node<Key,Value> node,Key key){
+    /**
+     * 相对于内部节点,寻找关键字的相对位置
+     * 其中的内部节点的第一个孩子是一个哨兵关键字,所有的关键字都大于这个关键字
+     * 所以定位时跳过哨兵关键字的比较。
+     * @param node 当前节点
+     * @param key 关键字
+     * @return
+     */
+    private int internalPos(Node<Key,Value> node,Key key){
         int pos;
         for(pos = 0; pos < node.count; pos++){
             if(pos + 1 == node.count  || less(key,node.childs[pos + 1].key)){
@@ -300,10 +389,32 @@ public class MyBTree<Key extends Comparable<? super Key>,Value> implements BTree
         return pos;
     }
 
-    private int pos(Node<Key,Value> node,Key key){
+    /**
+     * 相对当前外部节点,寻找关键字对应的位置
+     * @param node 当前节点
+     * @param key 关键字
+     * @return
+     */
+    private int externalPos(Node<Key,Value> node,Key key){
         int pos;
         for(pos = 0; pos < node.count; pos++){
             if(less(key,node.childs[pos].key)){
+                break;
+            }
+        }
+        return pos;
+    }
+
+    /**
+     * 在当前节点寻找关键字的数据项位置
+     * @param node 相对根节点
+     * @param key 关键字
+     * @return
+     */
+    private int accuratePos(Node<Key,Value> node,Key key){
+        int pos;
+        for(pos = 0; pos < node.count; pos++){
+            if(key.compareTo(node.childs[pos].key) == 0){
                 break;
             }
         }
